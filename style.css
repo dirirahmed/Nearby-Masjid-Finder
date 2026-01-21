@@ -1,20 +1,31 @@
+/* Reset and Base Layout */
+body, html { margin: 0; padding: 0; height: 100%; display: flex; font-family: 'Segoe UI', sans-serif; background: #000; overflow: hidden; }
+
 #sidebar { 
-    width: 400px; /* Wider sidebar */
-    background: #121212; /* Dark background */
+    width: 400px; 
+    height: 100vh;
+    background: #121212; 
     color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    z-index: 1000;
 }
 
+#map { flex-grow: 1; height: 100vh; background: #1a1a1a; }
+
+/* Dashboard & Wide Compass */
 #dashboard {
     padding: 30px 20px;
-    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+    background: linear-gradient(180deg, #1e1e1e 0%, #121212 100%);
     border-bottom: 1px solid #333;
     text-align: center;
 }
 
 #compass-wrapper {
     margin: 20px auto;
-    width: 180px; /* Wider compass */
-    height: 180px;
+    width: 200px; /* Wider for better visibility */
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,45 +35,48 @@
     position: relative;
     width: 100%;
     height: 100%;
-    border: 4px solid #2ecc71; /* Green glow border */
+    border: 4px solid #2ecc71; /* Islamic Green Glow */
     border-radius: 50%;
     background: #000;
-    box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+    box-shadow: 0 0 25px rgba(46, 204, 113, 0.2);
 }
 
-.cardinal { font-size: 14px; color: #666; font-weight: 800; }
-.north { top: 8px; color: #e74c3c; }
+.cardinal { position: absolute; font-size: 14px; font-weight: 800; color: #555; }
+.north { top: 10px; left: 50%; transform: translateX(-50%); color: #e74c3c; }
+.east { right: 10px; top: 50%; transform: translateY(-50%); }
+.south { bottom: 10px; left: 50%; transform: translateX(-50%); }
+.west { left: 10px; top: 50%; transform: translateY(-50%); }
+
+#qibla-indicator { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    font-size: 30px; line-height: 200px; transition: transform 0.8s ease-out; 
+}
 
 #device-arrow {
-    position: absolute;
-    top: 50%; left: 50%;
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 45px; /* Larger arrow */
-    color: #3498db;
-    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    font-size: 50px; color: #3498db;
+    text-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
 }
 
-#stats-panel {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
+/* Stats and Search */
+#stats-panel { display: flex; justify-content: space-around; margin-top: 15px; }
+.stat-box { background: #1e1e1e; padding: 12px; border-radius: 10px; width: 42%; border: 1px solid #333; }
+.stat-box small { display: block; color: #888; font-size: 11px; margin-bottom: 4px; letter-spacing: 1px; }
+.stat-box span { font-size: 20px; font-weight: bold; color: #fff; }
+
+#search-container { padding: 15px; display: flex; gap: 8px; background: #1a1a1a; }
+#address-input { flex-grow: 1; padding: 12px; background: #252525; border: 1px solid #333; color: white; border-radius: 6px; }
+#search-btn { padding: 12px; background: #34495e; border: none; border-radius: 6px; cursor: pointer; color: white; }
+
+#locate-btn { 
+    background: #27ae60; color: white; border: none; padding: 18px; 
+    font-weight: bold; letter-spacing: 1px; cursor: pointer; width: 100%;
 }
 
-.stat-box {
-    background: #1e1e1e;
-    padding: 10px;
-    border-radius: 8px;
-    width: 40%;
-}
-
-.stat-box small { display: block; color: #888; font-size: 10px; margin-bottom: 5px; }
-.stat-box span { font-size: 18px; font-weight: bold; color: #fff; }
-
-#list { background: #121212; }
+/* List Items */
+#list { flex-grow: 1; overflow-y: auto; background: #121212; padding-top: 10px; }
 .place-card { 
-    background: #1e1e1e; 
-    border: 1px solid #333; 
-    margin: 10px; 
-    border-radius: 8px; 
-    color: #fff;
+    background: #1e1e1e; border: 1px solid #333; margin: 10px 15px; 
+    padding: 15px; border-radius: 10px; color: #fff;
 }

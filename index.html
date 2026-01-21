@@ -1,34 +1,49 @@
-<div id="sidebar">
-    <div id="dashboard">
-        <h3>Qibla & Orientation</h3>
-        <div id="compass-wrapper">
-            <div id="compass-face">
-                <span class="cardinal north">N</span>
-                <span class="cardinal east">E</span>
-                <span class="cardinal south">S</span>
-                <span class="cardinal west">W</span>
-                <div id="qibla-indicator">🕋</div>
-                <div id="device-arrow">↑</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masjid Finder Pro</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="sidebar">
+        <div id="dashboard">
+            <h3>Qibla & Orientation</h3>
+            <div id="compass-wrapper">
+                <div id="compass-face">
+                    <span class="cardinal north">N</span>
+                    <span class="cardinal east">E</span>
+                    <span class="cardinal south">S</span>
+                    <span class="cardinal west">W</span>
+                    <div id="qibla-indicator">🕋</div>
+                    <div id="device-arrow">↑</div>
+                </div>
+            </div>
+            <div id="stats-panel">
+                <div class="stat-box">
+                    <small>QIBLA</small>
+                    <span id="qibla-val">--°</span>
+                </div>
+                <div class="stat-box">
+                    <small>FACING</small>
+                    <span id="facing-val">--°</span>
+                </div>
             </div>
         </div>
-        <div id="stats-panel">
-            <div class="stat-box">
-                <small>QIBLA</small>
-                <span id="qibla-val">--°</span>
-            </div>
-            <div class="stat-box">
-                <small>FACING</small>
-                <span id="facing-val">--°</span>
-            </div>
+
+        <div id="search-container">
+            <input type="text" id="address-input" placeholder="Search address...">
+            <button id="search-btn">🔍</button>
         </div>
-    </div>
 
-    <div id="search-container">
-        <input type="text" id="address-input" placeholder="Search address...">
-        <button id="search-btn">🔍</button>
+        <button id="locate-btn">📍 USE MY LOCATION</button>
+        <div id="list"></div>
     </div>
+    <div id="map"></div>
 
-    <button id="locate-btn">📍 USE MY LOCATION</button>
-    <div id="list"></div>
-</div>
-<div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
