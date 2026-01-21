@@ -1,25 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Masjid Finder (Free Edition)</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        body { margin: 0; display: flex; font-family: sans-serif; height: 100vh; }
-        #sidebar { width: 300px; padding: 20px; background: #f4f4f4; overflow-y: auto; }
-        #map { flex-grow: 1; }
-        .place-card { background: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <div id="sidebar">
-        <h2>Masjid Finder</h2>
-        <button id="locate-btn">Find Near Me</button>
-        <div id="list"></div>
-    </div>
-    <div id="map"></div>
+body, html { margin: 0; padding: 0; height: 100%; display: flex; font-family: 'Segoe UI', sans-serif; }
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+#sidebar { width: 350px; background: #fdfdfd; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 1000; overflow-y: auto; }
+
+#map { flex-grow: 1; height: 100vh; }
+
+#compass-container { background: #1a1a1a; color: white; padding: 25px 15px; text-align: center; }
+
+#compass-face { 
+    position: relative; width: 100px; height: 100px; 
+    border: 2px solid #444; border-radius: 50%; margin: 0 auto 10px; 
+}
+
+.cardinal { position: absolute; font-size: 10px; color: #888; font-weight: bold; }
+.north { top: 2px; left: 50%; transform: translateX(-50%); color: #e74c3c; }
+.east { right: 5px; top: 50%; transform: translateY(-50%); }
+.south { bottom: 2px; left: 50%; transform: translateX(-50%); }
+.west { left: 5px; top: 50%; transform: translateY(-50%); }
+
+#qibla-arrow-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); }
+#qibla-arrow { color: #000; font-size: 28px; line-height: 100px; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+#locate-btn { background: #27ae60; color: white; border: none; padding: 15px; cursor: pointer; font-size: 16px; font-weight: bold; }
+#locate-btn:hover { background: #219150; }
+
+.place-card { background: white; padding: 15px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+.place-card:hover { background: #f9f9f9; }
+
+.rating { color: #f1c40f; font-weight: bold; font-size: 0.9rem; }
+.dist { color: #888; font-size: 0.8rem; }
+.prayer-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: inline-block; margin-top: 8px; font-weight: bold; }
+.nav-link { float: right; color: #3498db; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-top: 10px; }
