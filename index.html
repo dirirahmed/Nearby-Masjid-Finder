@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masjid Finder Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Masjid Finder (Free Edition)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; display: flex; font-family: sans-serif; height: 100vh; }
+        #sidebar { width: 300px; padding: 20px; background: #f4f4f4; overflow-y: auto; }
+        #map { flex-grow: 1; }
+        .place-card { background: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
 </head>
 <body>
     <div id="sidebar">
-        <h1>Masjid Locator</h1>
-        <p>Find the nearest place of worship instantly.</p>
-        <button id="locate-me">Use My Location</button>
-        <hr>
-        <div id="results-list">
-            <p class="placeholder">Click "Use My Location" to start...</p>
-        </div>
+        <h2>Masjid Finder</h2>
+        <button id="locate-btn">Find Near Me</button>
+        <div id="list"></div>
     </div>
     <div id="map"></div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
