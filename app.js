@@ -1,46 +1,47 @@
-let map, userMarker, infoWindow;
+let map, userMarker;
 let masjidMarkers = [];
 const KAABA = { lat: 21.422487, lng: 39.826206 };
 
-async function initMap() {
-    const { Map } = await google.maps.importLibrary("maps");
-    const { Place, Autocomplete } = await google.maps.importLibrary("places");
-    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+function initMap() {
+    map = L.map('map').setView([21.4225, 39.8262], 14);
 
-    // Dark Mode Map Style
-    map = new Map(document.getElementById("map"), {
-        center: { lat: 21.4225, lng: 39.8262 },
-        zoom: 14,
-        mapId: "4504f994bd057f62", // Use your Map ID for Advanced Markers
-        disableDefaultUI: true,
-        styles: [{ "elementType": "geometry", "stylers": [{ "color": "#212121" }] }] // Basic dark style
-    });
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors, © CartoDB'
+    }).addTo(map);
 
-    // 1. Setup Blue Arrow for User
-    const pin = new PinElement({ background: "#007AFF", borderColor: "#fff", glyphColor: "#fff" });
-    userMarker = new AdvancedMarkerElement({ map, zIndex: 10 });
+    // User marker
+    userMarker = L.marker([21.4225, 39.8262], {
+        icon: L.divIcon({
+            html: '📍',
+            className: 'user-marker',
+            iconSize: [30, 30]
+        })
+    }).addTo(map);
 
-    // 2. Setup Autocomplete
+    // Search input
     const input = document.getElementById("address-input");
-    const autocomplete = new Autocomplete(input);
-    autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
-            updateUI(place.geometry.location.toJSON(), Place, AdvancedMarkerElement);
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            searchLocation(input.value);
         }
     });
 
-    // 3. Locate Button
+    // Search button
+    document.getElementById("search-btn").addEventListener("click", () => {
+        searchLocation(input.value);
+    });
+
+    // Locate button
     document.getElementById("locate-btn").addEventListener("click", () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
-                updateUI(pos, Place, AdvancedMarkerElement);
+                updateUI(pos);
             });
         }
     });
 
-    // 4. Compass Logic
+    // Compass logic (same as before)
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientationabsolute', (e) => {
             if (e.alpha) {
@@ -49,6 +50,23 @@ async function initMap() {
             }
         }, true);
     }
+}
+
+function searchLocation(query) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                const pos = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                updateUI(pos);
+            } else {
+                alert('Location not found');
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            alert('Search failed');
+        });
 }
 
 function calculateQibla(lat, lon) {
@@ -60,42 +78,50 @@ function calculateQibla(lat, lon) {
     return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 }
 
-async function updateUI(pos, Place, AdvancedMarkerElement) {
-    map.panTo(pos);
-    userMarker.position = pos;
+async function updateUI(pos) {
+    map.setView([pos.lat, pos.lng], 14);
+    userMarker.setLatLng([pos.lat, pos.lng]);
 
     const qibla = calculateQibla(pos.lat, pos.lng);
     document.getElementById('qibla-val').innerText = `${Math.round(qibla)}°`;
     document.getElementById('qibla-indicator').style.transform = `rotate(${qibla}deg)`;
 
     // Clear old markers
-    masjidMarkers.forEach(m => m.map = null);
+    masjidMarkers.forEach(m => map.removeLayer(m));
     masjidMarkers = [];
 
-    const request = {
-        fields: ["displayName", "location", "formattedAddress"],
-        locationRestriction: { center: pos, radius: 5000 },
-        includedPrimaryTypes: ["mosque"],
-        maxResultCount: 15
-    };
+    // Fetch mosques using Overpass API
+    const query = `[out:json];node(around:5000,${pos.lat},${pos.lng})[amenity=mosque];out;`;
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 
-    const { places } = await Place.searchNearby(request);
-    const list = document.getElementById("list");
-    list.innerHTML = "";
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById("list");
+            list.innerHTML = "";
 
-    places.forEach(place => {
-        const marker = new AdvancedMarkerElement({ map, position: place.location, title: place.displayName.text });
-        masjidMarkers.push(marker);
+            data.elements.forEach(element => {
+                const marker = L.marker([element.lat, element.lon]).addTo(map);
+                masjidMarkers.push(marker);
 
-        const card = document.createElement("div");
-        card.className = "place-card";
-        card.innerHTML = `<strong>${place.displayName.text}</strong><p>${place.formattedAddress}</p>`;
-        card.onclick = () => {
-            map.panTo(place.location);
-            map.setZoom(16);
-        };
-        list.appendChild(card);
-    });
+                const name = element.tags.name || "Mosque";
+                const card = document.createElement("div");
+                card.className = "place-card";
+                card.innerHTML = `<strong>${name}</strong><p>${element.lat.toFixed(4)}, ${element.lon.toFixed(4)}</p>`;
+                card.onclick = () => {
+                    map.setView([element.lat, element.lon], 16);
+                };
+                list.appendChild(card);
+            });
+
+            if (data.elements.length === 0) {
+                list.innerHTML = "<p>No mosques found nearby</p>";
+            }
+        })
+        .catch(error => {
+            console.error('Mosque search error:', error);
+            document.getElementById("list").innerHTML = "<p>Error loading mosques</p>";
+        });
 }
 
 initMap();
