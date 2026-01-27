@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Masjid Finder Pro</title>
+    <meta name="description" content="Find nearby mosques with Qibla direction and prayer times.">
+    <meta name="keywords" content="mosque finder, qibla, prayer times, islamic app">
+    <meta property="og:title" content="Masjid Finder Pro">
+    <meta property="og:description" content="Find nearby mosques with Qibla direction and prayer times.">
+    <meta property="og:image" content="https://dirirahmed.github.io/Nearby-Masjid-Finder/icon.png">
+    <meta property="og:url" content="https://dirirahmed.github.io/Nearby-Masjid-Finder/">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,6 +28,7 @@
             <div><small>QIBLA</small><br><span id="qibla-val">--°</span></div>
             <div><small>HEADING</small><br><span id="facing-val">--°</span></div>
         </div>
+        <button id="theme-toggle">🌙</button>
     </div>
 
     <div id="bottom-sheet">
@@ -29,14 +38,33 @@
             <button id="search-btn">🔍</button>
             <button id="locate-btn">📍</button>
         </div>
+        <div id="tabs">
+            <button id="mosques-tab" class="active">Mosques</button>
+            <button id="favorites-tab">Favorites</button>
+            <button id="prayer-tab">Prayer Times</button>
+        </div>
         <div id="list">
             <p style="text-align:center; color:#666;">Tap the location icon or search to find Masjids</p>
         </div>
+        <div id="loading" style="display:none; text-align:center; padding:20px;">Loading...</div>
+        <div id="error-msg" style="display:none; text-align:center; padding:20px; color:red;"></div>
     </div>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
     <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
 </body>
 </html>
